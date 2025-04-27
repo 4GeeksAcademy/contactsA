@@ -8,10 +8,10 @@ export const ContactProvider = ({ children }) => {
   const [contacts, setContacts] = useState([
     {
       id: 1,
-      name: "Juan Pérez",
-      number: "123-456-7890",
-      email: "juan@example.com",
-      address: "Calle Falsa 123",
+      name: "Carlos",
+      number: "123-456-789",
+      email: "carlos@ejemplo.com",
+      address: "Calle random 1070",
       imagen: "https://i.pinimg.com/736x/8f/52/79/8f5279cb77fc929deee15c144595faf2.jpg"
     },
   ]);
@@ -29,8 +29,14 @@ export const ContactProvider = ({ children }) => {
     setContacts(prev => prev.filter(contact => contact.id !== id));
   };
 
+  const updateContact = (updated) => {
+    setContacts(prev =>
+      prev.map(contact => contact.id === updated.id ? { ...contact, ...updated } : contact)
+    );
+  };
+
   return (
-    <ContactContext.Provider value={{ contacts, addContact, deleteContact }}>
+    <ContactContext.Provider value={{ contacts, addContact, deleteContact, updateContact }}>
       {children}
     </ContactContext.Provider>
   );

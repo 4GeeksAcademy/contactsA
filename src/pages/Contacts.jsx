@@ -3,8 +3,11 @@ import { useContacts } from "./ContactContext";
 import { ContactCard } from "./ContactCard";
 
 export const Contacts = () => {
-  const { contacts, deleteContact } = useContacts();
+  const { contacts, deleteContact, updateContact } = useContacts();
   const [contactToDelete, setContactToDelete] = useState(null);
+
+  const [contactToEdit, setContactToEdit] = useState(null);
+  const [editForm, setEditForm] = useState({ name: "", number: "", email: "", address: "" });
 
   const handleDeleteClick = (contact) => {
     setContactToDelete(contact);
@@ -21,6 +24,33 @@ export const Contacts = () => {
     setContactToDelete(null);
   };
 
+  const handleEditClick = (contact) => {
+    setContactToEdit(contact);
+    setEditForm({ 
+      id: contact.id,
+      name: contact.name,
+      number: contact.number,
+      email: contact.email,
+      address: contact.address
+    });
+  };
+  const handleEditChange = e => {
+    setEditForm({ ...editForm, [e.target.name]: e.target.value });
+  };
+  const handleEditSubmit = e => {
+    e.preventDefault();
+    updateContact({
+      id: editForm.id,
+      name: editForm.name,
+      number: editForm.number,
+      email: editForm.email,
+      address: editForm.address,
+      imagen: contacts.find((contact) => contact.id === editForm.id).imagen
+    });
+    setContactToEdit(null);
+  };
+  const cancelEdit = () => setContactToEdit(null);
+
   return (
     <div className="container">
       <h1 className="text-center my-4">Lista de contactos</h1>
@@ -31,7 +61,7 @@ export const Contacts = () => {
         <ContactCard 
           key={contact.id}
           {...contact}
-          onEdit={() => console.log("Editar", contact.id)}
+          onEdit={() => handleEditClick(contact)}
           onDelete={() => handleDeleteClick(contact)}
         />
       ))}
@@ -56,6 +86,62 @@ export const Contacts = () => {
 					</div>
 				</div>
 			)}
+
+			{/* Modal Editar */}
+			{contactToEdit && (
+        <div className="modal show d-block" tabIndex="-1" style={{ backgroundColor: "rgba(0,0,0,0.5)" }}>
+          <div className="modal-dialog">
+            <form className="modal-content" onSubmit={handleEditSubmit}>
+              <div className="modal-header">
+                <h5 className="modal-title">Editar contacto</h5>
+                <button className="btn-close" type="button" onClick={cancelEdit} />
+              </div>
+              <div className="modal-body">
+                <div className="mb-2">
+                  <label>Nombre</label>
+                  <input
+                    name="name"
+                    className="form-control"
+                    value={editForm.name}
+                    onChange={handleEditChange}
+                  />
+                </div>
+                <div className="mb-2">
+                  <label>Teléfono</label>
+                  <input
+                    name="number"
+                    className="form-control"
+                    value={editForm.number}
+                    onChange={handleEditChange}
+                  />
+                </div>
+                <div className="mb-2">
+                  <label>Email</label>
+                  <input
+                    name="email"
+                    className="form-control"
+                    value={editForm.email}
+                    onChange={handleEditChange}
+                  />
+                </div>
+                <div className="mb-2">
+                  <label>Dirección</label>
+                  <input
+                    name="address"
+                    className="form-control"
+                    value={editForm.address}
+                    onChange={handleEditChange}
+                  />
+                </div>
+              </div>
+              <div className="modal-footer">
+                <button type="button" className="btn btn-secondary" onClick={cancelEdit}>Cancelar</button>
+                <button type="submit" className="btn btn-primary">Guardar cambios</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
 		</div>
 	);
 };
