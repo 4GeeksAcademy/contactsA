@@ -1,11 +1,15 @@
-import { useState } from "react";
+import React, { useState } from "react"; // Asegúrate de importar useState
+import { useContacts } from "./ContactContext";
+import { useNavigate } from "react-router-dom";
 
-export const AddNewContact = ({ onAddContact }) => {
+export const AddNewContact = () => {
+  const { addContact } = useContacts();
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
-    fullname: "",
+    name: "",
     email: "",
-    phone: "",
+    number: "",
     address: "",
   });
 
@@ -18,23 +22,23 @@ export const AddNewContact = ({ onAddContact }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!formData.fullname || !formData.email) return;
+    if (!formData.name || !formData.email) return;
 
-    onAddContact(formData); // Enviamos el nuevo contacto al padre
-    setFormData({ fullname: "", email: "", phone: "", address: "" }); // Limpiamos el formulario
+    addContact(formData);
+    navigate("/"); // Volver a la página principal
   };
 
   return (
     <div className="container">
-      <form className="p-4 bg-gray-100 rounded-md w-80 d-flex flex-wrap" onSubmit={handleSubmit}>
+      <form className="p-4 bg-light rounded w-100" onSubmit={handleSubmit}>
       <h1 className="w-100 text-center">Añadir un nuevo contacto</h1>
       <label className="mb-2 w-100">
         Nombre:
         <input
           type="text"
-          name="fullname"
+          name="name"
           className="w-100 p-2 form-control"
-          value={formData.fullname}
+          value={formData.name}
           onChange={handleChange}
         />
       </label>
@@ -54,9 +58,9 @@ export const AddNewContact = ({ onAddContact }) => {
         Número:
         <input
           type="text"
-          name="phone"
+          name="number"
           className="w-100 p-2 form-control"
-          value={formData.phone}
+          value={formData.number}
           onChange={handleChange}
         />
       </label>
