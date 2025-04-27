@@ -3,15 +3,19 @@ import { useContacts } from "./ContactContext";
 import { ContactCard } from "./ContactCard";
 
 export const Contacts = () => {
-  const { contacts, deleteContact, updateContact } = useContacts();
-  const [contactToDelete, setContactToDelete] = useState(null);
+	const { contacts, loading, error, deleteContact, updateContact } = useContacts();
+  	const [contactToDelete, setContactToDelete] = useState(null);
 
-  const [contactToEdit, setContactToEdit] = useState(null);
-  const [editForm, setEditForm] = useState({ name: "", number: "", email: "", address: "" });
+	// Manejar error y carga
+	if (loading) return <div className="text-center my-4">Cargando contactos…</div>;
+	if (error)   return <div className="text-center my-4 text-danger">Error: {error}</div>;
 
-  const handleDeleteClick = (contact) => {
-    setContactToDelete(contact);
-  };
+ 	const [contactToEdit, setContactToEdit] = useState(null);
+  	const [editForm, setEditForm] = useState({ name: "", phone: "", email: "", address: "" });
+
+  	const handleDeleteClick = (contact) => {
+    	setContactToDelete(contact);
+  	};
 
   const confirmDelete = () => {
     if (contactToDelete) {
@@ -29,7 +33,7 @@ export const Contacts = () => {
     setEditForm({ 
       id: contact.id,
       name: contact.name,
-      number: contact.number,
+      phone: contact.phone,
       email: contact.email,
       address: contact.address
     });
@@ -42,7 +46,7 @@ export const Contacts = () => {
     updateContact({
       id: editForm.id,
       name: editForm.name,
-      number: editForm.number,
+      phone: editForm.phone,
       email: editForm.email,
       address: editForm.address,
       imagen: contacts.find((contact) => contact.id === editForm.id).imagen
@@ -109,14 +113,14 @@ export const Contacts = () => {
                 <div className="mb-2">
                   <label>Teléfono</label>
                   <input
-                    name="number"
+                    name="phone"
                     className="form-control"
-                    value={editForm.number}
+                    value={editForm.phone}
                     onChange={handleEditChange}
                   />
                 </div>
                 <div className="mb-2">
-                  <label>Email</label>
+                  <label>Correo</label>
                   <input
                     name="email"
                     className="form-control"

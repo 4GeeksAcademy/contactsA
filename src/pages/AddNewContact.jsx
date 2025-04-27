@@ -9,9 +9,12 @@ export const AddNewContact = () => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
-    number: "",
+    phone: "",
     address: "",
   });
+
+  const [error, setError] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (e) => {
     setFormData({
@@ -20,18 +23,26 @@ export const AddNewContact = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.name || !formData.email) return;
 
-    addContact(formData);
-    navigate("/"); // Volver a la página principal
+    try {
+      await addContact(formData);
+      navigate("/");
+    } catch (err) {
+        setError(err.message || "Error al guardar contacto");
+      } finally {
+        setIsSubmitting(false);
+      }
   };
 
   return (
     <div className="container">
       <form className="p-4 bg-light rounded w-100" onSubmit={handleSubmit}>
       <h1 className="w-100 text-center">Añadir un nuevo contacto</h1>
+
+      {error && <div className="alert alert-danger">{error}</div>}
       <label className="mb-2 w-100">
         Nombre:
         <input
@@ -58,9 +69,9 @@ export const AddNewContact = () => {
         Número:
         <input
           type="text"
-          name="number"
+          name="phone"
           className="w-100 p-2 form-control"
-          value={formData.number}
+          value={formData.phone}
           onChange={handleChange}
         />
       </label>
@@ -76,8 +87,8 @@ export const AddNewContact = () => {
         />
       </label>
 
-      <button type="submit" className="mt-2 p-2 btn btn-primary w-100">
-        Guardar
+      <button type="submit" className="mt-2 p-2 btn btn-primary w-100" disabled={isSubmitting}>
+        {isSubmitting ? "Guardando…" : "Guardar"}
       </button>
       </form>
     </div>
