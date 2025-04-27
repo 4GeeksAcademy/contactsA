@@ -46,7 +46,7 @@ const addContact = async (newContact) => {
       phone: newContact.phone,
       address: newContact.address
     };
-    const res = await fetch(`${API_BASE}`, {
+    const res = await fetch(`${API_BASE}/contact/agendas/ayakta/contacts`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload)
@@ -68,7 +68,7 @@ const addContact = async (newContact) => {
 
   // method: DELETE
   const deleteContact = async (id) => {
-    const res = await fetch(`${API_BASE}/${id}`, {
+    const res = await fetch(`${API_BASE}/contact/agendas/ayakta/contacts/${id}`, {
       method: "DELETE"
     });
     if (!res.ok) throw new Error("Error al borrar contacto");
@@ -83,7 +83,7 @@ const updateContact = async (updated) => {
       phone: updated.phone,
       address: updated.address
     };
-    const res = await fetch(`${API_BASE}/${updated.id}`, {
+    const res = await fetch(`${API_BASE}/contact/agendas/ayakta/contacts/${updated.id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload)
