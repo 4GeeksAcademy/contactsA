@@ -13,30 +13,32 @@ export const ContactProvider = ({ children }) => {
 
 // method: GET para leer
 useEffect(() => {
-    async function fetchContacts() {
-      try {
-        const res = await fetch(`${API_BASE}/agendas/ayakta/contacts`);
-        if (!res.ok) throw new Error("Error al cargar contactos");
-        const data = await res.json();
-        console.log("RESPUESTA API:", data);      //remover después
-        
-        const mapped = data.map(c => ({
-          id: c.id,
-          name: c.name,
-          email: c.email,
-          phone: c.phone,
-          address: c.address,
-          imagen: c.imagen || "https://i.pinimg.com/736x/8f/52/79/8f5279cb77fc929deee15c144595faf2.jpg"
-        }));
-        setContacts(mapped);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
+  async function fetchContacts() {
+    try {
+      const res = await fetch(`${API_BASE}/agendas/ayakta/contacts`);
+      if (!res.ok) throw new Error("Error al cargar contactos");
+
+      const data = await res.json();
+
+      const mapped = data.contacts.map(c => ({
+        id: c.id,
+        name: c.name,
+        email: c.email,
+        phone: c.phone,
+        address: c.address,
+        imagen: c.imagen || "https://i.pinimg.com/736x/8f/52/79/8f5279cb77fc929deee15c144595faf2.jpg"
+      }));
+
+      setContacts(mapped);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
     }
-    fetchContacts();
-  }, []);
+  }
+
+  fetchContacts();
+}, []);
 
 //Crear 
 const addContact = async (newContact) => {
@@ -46,7 +48,7 @@ const addContact = async (newContact) => {
       phone: newContact.phone,
       address: newContact.address
     };
-    const res = await fetch(`${API_BASE}/contact/agendas/ayakta/contacts`, {
+    const res = await fetch(`${API_BASE}/agendas/ayakta/contacts`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload)
@@ -61,14 +63,14 @@ const addContact = async (newContact) => {
         email: created.email,
         phone: created.phone,
         address: created.address,
-        imagen: created.imagen || payload.imagen
+        imagen: created.imagen || "https://i.pinimg.com/736x/8f/52/79/8f5279cb77fc929deee15c144595faf2.jpg"
       }
     ]);
   };
 
   // method: DELETE
   const deleteContact = async (id) => {
-    const res = await fetch(`${API_BASE}/contact/agendas/ayakta/contacts/${id}`, {
+    const res = await fetch(`${API_BASE}/agendas/ayakta/contacts/${id}`, {
       method: "DELETE"
     });
     if (!res.ok) throw new Error("Error al borrar contacto");
@@ -78,12 +80,12 @@ const addContact = async (newContact) => {
 //  Actualizar
 const updateContact = async (updated) => {
     const payload = {
-      full_name: updated.name,
+      name: updated.name,
       email: updated.email,
       phone: updated.phone,
       address: updated.address
     };
-    const res = await fetch(`${API_BASE}/contact/agendas/ayakta/contacts/${updated.id}`, {
+    const res = await fetch(`${API_BASE}/agendas/ayakta/contacts/${updated.id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload)
@@ -95,7 +97,7 @@ const updateContact = async (updated) => {
         c.id === updated.id
           ? {
                 ...c,
-                name: data.full_name,
+                name: data.name,
                 email: data.email,
                 phone: data.phone,
                 address: data.address

@@ -6,10 +6,6 @@ export const Contacts = () => {
 	const { contacts, loading, error, deleteContact, updateContact } = useContacts();
   	const [contactToDelete, setContactToDelete] = useState(null);
 
-	// Manejar error y carga
-	if (loading) return <div className="text-center my-4">Cargando contactos…</div>;
-	if (error)   return <div className="text-center my-4 text-danger">Error: {error}</div>;
-
  	const [contactToEdit, setContactToEdit] = useState(null);
   	const [editForm, setEditForm] = useState({ name: "", phone: "", email: "", address: "" });
 
@@ -54,6 +50,10 @@ export const Contacts = () => {
     setContactToEdit(null);
   };
   const cancelEdit = () => setContactToEdit(null);
+
+  // Manejar error y carga
+	if (loading) return <div className="text-center my-4">Cargando contactos…</div>;
+	if (error)   return <div className="text-center my-4 text-danger">Error: {error}</div>;
 
   return (
     <div className="container">
